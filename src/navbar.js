@@ -10,13 +10,13 @@ const Tab = createBottomTabNavigator();
 function MyTabs() {
   return (
     <Tab.Navigator
-      initialRouteName="Orders"
+      initialRouteName="My Orders"
       screenOptions={{
         tabBarActiveTintColor: 'red',
       }}
     >
       <Tab.Screen
-        name="Orders"
+        name="My Orders"
         component={Orders}
         options={{
           tabBarLabel: 'My orders',

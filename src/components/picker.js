@@ -1,7 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Text, View, StyleSheet } from 'react-native';
 import { Picker as ReactNativePicker } from '@react-native-picker/picker';
-import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
   container: {
