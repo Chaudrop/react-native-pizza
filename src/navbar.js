@@ -12,7 +12,7 @@ function MyTabs() {
     <Tab.Navigator
       initialRouteName="My Orders"
       screenOptions={{
-        tabBarActiveTintColor: 'red',
+        tabBarActiveTintColor: '#e63022',
       }}
     >
       <Tab.Screen

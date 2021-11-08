@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Button, Image } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Text, Image } from 'react-native';
 import Picker from '../components/picker';
 import { Chicken, Kebab, Margherita, Regina, FourCheese } from '../../assets/pizzas';
 
@@ -9,15 +9,33 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  button: {
-    margin: 15,
-    width: 150,
-  },
   image: {
     flex: 1,
     width: '75%',
     maxHeight: '40%',
     resizeMode: 'contain',
+  },
+  buttonContainer: {
+    marginTop: 15,
+    height: 45,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 150,
+    borderRadius: 20,
+    backgroundColor: '#e63022',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+    elevation: 3,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
   },
 });
 
@@ -43,9 +61,9 @@ function New() {
       <Picker label="Select Flavor" value={flavor} onChange={setFlavor} items={flavors} />
       <Picker label="Select Crust" value={crust} onChange={setCrust} items={crusts} />
       <Picker label="Select Size" value={size} onChange={setSize} items={sizes} />
-      <View style={styles.button}>
-        <Button color="red" title="Send order" onPress={() => {}} />
-      </View>
+      <TouchableOpacity style={styles.buttonContainer}>
+        <Text style={styles.buttonText}>SEND ORDER</Text>
+      </TouchableOpacity>
     </View>
   );
 }

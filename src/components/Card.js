@@ -56,22 +56,22 @@ function Card(props) {
       <Image style={styles.cardImage} source={pizzas[flavor]} />
       <View style={styles.infoContainer}>
         <View style={styles.textContainer}>
-          <FontAwesome5 style={styles.icon} name="pizza-slice" color="red" size={16} />
+          <FontAwesome5 style={styles.icon} name="pizza-slice" color="#e63022" size={16} />
           <Text style={styles.text}>{flavor}</Text>
         </View>
         <View style={styles.textContainer}>
-          <MaterialCommunityIcons style={styles.icon} name="layers" color="red" size={16} />
+          <MaterialCommunityIcons style={styles.icon} name="layers" color="#e63022" size={16} />
           <Text style={styles.text}>{crust}</Text>
         </View>
         <View style={styles.textContainer}>
-          <Ionicons style={styles.icon} name="md-resize" color="red" size={16} />
+          <Ionicons style={styles.icon} name="md-resize" color="#e63022" size={16} />
           <Text style={styles.text}>{size}</Text>
         </View>
         <View style={styles.textContainer}>
           <MaterialCommunityIcons
             style={styles.icon}
             name="map-marker-distance"
-            color="red"
+            color="#e63022"
             size={16}
           />
           <Text style={styles.text}>{distance}</Text>
