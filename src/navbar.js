@@ -1,7 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import Map from './screens/map';
+import New from './screens/new';
 import Profile from './screens/profile';
 import Orders from './screens/orders';
 
@@ -26,12 +26,12 @@ function MyTabs() {
         }}
       />
       <Tab.Screen
-        name="Map"
-        component={Map}
+        name="Order a new pizza"
+        component={New}
         options={{
-          tabBarLabel: 'Map',
+          tabBarLabel: 'New order',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="map" color={color} size={size} />
+            <MaterialCommunityIcons name="plus-circle" color={color} size={size} />
           ),
         }}
       />

@@ -110,25 +110,34 @@ export default function Router() {
     [],
   );
 
+  function Screens(contextState) {
+    const { isLoading, userToken, isSignout } = contextState;
+    if (isLoading) {
+      return (
+        <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
+      );
+    }
+
+    if (userToken == null) {
+      return (
+        <Stack.Screen
+          name="SignIn"
+          component={SignInScreen}
+          options={{
+            title: 'Sign in',
+            animationTypeForReplace: isSignout ? 'pop' : 'push',
+          }}
+        />
+      );
+    }
+
+    return <Stack.Screen name="Home" component={NavBar} options={{ headerShown: false }} />;
+  }
+
   return (
     <AuthContext.Provider value={{ ...authContext, state }}>
       <NavigationContainer>
-        <Stack.Navigator>
-          {state.isLoading ? (
-            <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
-          ) : state.userToken == null ? (
-            <Stack.Screen
-              name="SignIn"
-              component={SignInScreen}
-              options={{
-                title: 'Sign in',
-                animationTypeForReplace: state.isSignout ? 'pop' : 'push',
-              }}
-            />
-          ) : (
-            <Stack.Screen name="Home" component={NavBar} options={{ headerShown: false }} />
-          )}
-        </Stack.Navigator>
+        <Stack.Navigator>{Screens(state)}</Stack.Navigator>
       </NavigationContainer>
     </AuthContext.Provider>
   );
