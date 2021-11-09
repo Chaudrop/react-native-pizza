@@ -1,7 +1,11 @@
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, Text, Image } from 'react-native';
+import { Keyboard, StyleSheet, View, TouchableOpacity, Text, Image } from 'react-native';
+import Toast from 'react-native-root-toast';
+import * as Location from 'expo-location';
 import Picker from '../components/picker';
 import { Chicken, Kebab, Margherita, Regina, FourCheese } from '../../assets/pizzas';
+import firebase from '../firebase/config';
+import AuthContext from '../context';
 
 const styles = StyleSheet.create({
   container: {
@@ -50,10 +54,54 @@ const flavors = Object.keys(pizzas);
 const crusts = ['Thin', 'Normal', 'Large'];
 const sizes = ['S', 'M', 'L', 'XL'];
 
+function getRandomOffset() {
+  return Math.round(Math.random() * 100) / 1000;
+}
+
 function New() {
+  const context = React.useContext(AuthContext);
   const [flavor, setFlavor] = React.useState('Chicken');
   const [crust, setCrust] = React.useState('Normal');
   const [size, setSize] = React.useState('M');
+  const [location, setLocation] = React.useState(null);
+
+  React.useEffect(() => {
+    (async () => {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        return setLocation(false);
+      }
+
+      const currentLocation = await Location.getCurrentPositionAsync({});
+      return setLocation(currentLocation);
+    })();
+  }, []);
+
+  const createOrder = () => {
+    const collectionRef = firebase.firestore().collection('orders');
+    const data = {
+      flavor,
+      crust,
+      size,
+      authorID: context.state.user.id,
+      createdAt: Date.now(),
+      location: location
+        ? {
+            lat: location.coords.latitude + getRandomOffset(),
+            lng: location.coords.longitude + getRandomOffset(),
+          }
+        : null,
+    };
+    collectionRef
+      .add(data)
+      .then(() => {
+        Keyboard.dismiss();
+        Toast.show('Order successfully created');
+      })
+      .catch((error) => {
+        Toast.show(error.message);
+      });
+  };
 
   return (
     <View style={styles.container}>
@@ -61,7 +109,7 @@ function New() {
       <Picker label="Select Flavor" value={flavor} onChange={setFlavor} items={flavors} />
       <Picker label="Select Crust" value={crust} onChange={setCrust} items={crusts} />
       <Picker label="Select Size" value={size} onChange={setSize} items={sizes} />
-      <TouchableOpacity style={styles.buttonContainer}>
+      <TouchableOpacity style={styles.buttonContainer} onPress={createOrder}>
         <Text style={styles.buttonText}>SEND ORDER</Text>
       </TouchableOpacity>
     </View>
