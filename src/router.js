@@ -1,11 +1,13 @@
 import React from 'react';
-import * as SecureStore from 'expo-secure-store';
-import { Button, Image, TextInput, View } from 'react-native';
+import { Image, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import NavBar from './navbar';
 import AuthContext from './context';
 import LoadingScreen from '../assets/loading.png';
+import LoginScreen from './screens/login';
+import RegistrationScreen from './screens/register';
+import firebase from './firebase/config';
 
 function SplashScreen() {
   return (
@@ -18,49 +20,34 @@ function SplashScreen() {
   );
 }
 
-function SignInScreen() {
-  const [username, setUsername] = React.useState('');
-  const [password, setPassword] = React.useState('');
-
-  const { signIn } = React.useContext(AuthContext);
-
-  return (
-    <View>
-      <TextInput placeholder="Username" value={username} onChangeText={setUsername} />
-      <TextInput
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-      <Button title="Sign in" onPress={() => signIn({ username, password })} />
-    </View>
-  );
-}
-
 const Stack = createStackNavigator();
 
 export default function Router() {
   const [state, dispatch] = React.useReducer(
     (prevState, action) => {
       switch (action.type) {
-        case 'RESTORE_TOKEN':
+        case 'STOP_LOADING':
           return {
             ...prevState,
-            userToken: action.token,
+            isLoading: false,
+          };
+        case 'RESTORE_USER':
+          return {
+            ...prevState,
+            user: action.user,
             isLoading: false,
           };
         case 'SIGN_IN':
           return {
             ...prevState,
             isSignout: false,
-            userToken: action.token,
+            user: action.user,
           };
         case 'SIGN_OUT':
           return {
             ...prevState,
             isSignout: true,
-            userToken: null,
+            user: null,
           };
         default:
           return prevState;
@@ -69,65 +56,67 @@ export default function Router() {
     {
       isLoading: true,
       isSignout: false,
-      userToken: null,
+      user: null,
     },
   );
 
   React.useEffect(() => {
-    const bootstrapAsync = async () => {
-      let userToken;
-      try {
-        userToken = await SecureStore.getItemAsync('access_token');
-      } catch (error) {
-        userToken = null;
+    const usersRef = firebase.firestore().collection('users');
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        usersRef
+          .doc(user.uid)
+          .get()
+          .then((document) => {
+            const userData = document.data();
+            dispatch({ type: 'RESTORE_USER', user: userData });
+          })
+          .catch(() => {
+            dispatch({ type: 'STOP_LOADING' });
+          });
+      } else {
+        dispatch({ type: 'STOP_LOADING' });
       }
-      dispatch({ type: 'RESTORE_TOKEN', token: userToken });
-    };
-
-    bootstrapAsync();
+    });
   }, []);
 
   const authContext = React.useMemo(
     () => ({
-      signIn: async () => {
-        try {
-          await SecureStore.setItemAsync('access_token', 'dummy-auth-token');
-        } catch (error) {
-          // empty
-        }
-        dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
+      signIn: async (user) => {
+        dispatch({ type: 'SIGN_IN', user });
       },
-      signOut: () => dispatch({ type: 'SIGN_OUT' }),
-      signUp: async () => {
-        try {
-          await SecureStore.setItemAsync('access_token', 'dummy-auth-token');
-        } catch (error) {
-          // empty
-        }
-        dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
+      signOut: async () => {
+        await firebase.auth().signOut();
+        dispatch({ type: 'SIGN_OUT' });
+      },
+      signUp: async (user) => {
+        dispatch({ type: 'SIGN_IN', user });
       },
     }),
     [],
   );
 
   function Screens(contextState) {
-    const { isLoading, userToken, isSignout } = contextState;
+    const { isLoading, user, isSignout } = contextState;
     if (isLoading) {
       return (
         <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
       );
     }
 
-    if (userToken == null) {
+    if (user === null) {
       return (
-        <Stack.Screen
-          name="SignIn"
-          component={SignInScreen}
-          options={{
-            title: 'Sign in',
-            animationTypeForReplace: isSignout ? 'pop' : 'push',
-          }}
-        />
+        <>
+          <Stack.Screen
+            name="Login"
+            component={LoginScreen}
+            options={{
+              title: 'Sign in',
+              animationTypeForReplace: isSignout ? 'pop' : 'push',
+            }}
+          />
+          <Stack.Screen name="Registration" component={RegistrationScreen} />
+        </>
       );
     }
 
