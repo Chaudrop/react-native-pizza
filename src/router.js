@@ -49,6 +49,11 @@ export default function Router() {
             isSignout: true,
             user: null,
           };
+        case 'CHANGE_PHOTO':
+          return {
+            ...prevState,
+            user: { ...prevState.user, photoURL: action.newUri },
+          };
         default:
           return prevState;
       }
@@ -91,6 +96,9 @@ export default function Router() {
       },
       signUp: async (user) => {
         dispatch({ type: 'SIGN_IN', user });
+      },
+      changeUserProfileImage: async (newUri) => {
+        dispatch({ type: 'CHANGE_PHOTO', newUri });
       },
     }),
     [],

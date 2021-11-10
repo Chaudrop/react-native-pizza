@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { StyleSheet, FlatList, Text, View } from 'react-native';
 import * as Location from 'expo-location';
 import Toast from 'react-native-root-toast';
@@ -37,7 +38,8 @@ function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
   return d;
 }
 
-function Orders() {
+function Orders(props) {
+  const { navigation } = props;
   const context = React.useContext(AuthContext);
   const [location, setLocation] = React.useState(null);
   const [orders, setOrders] = React.useState(null);
@@ -52,14 +54,15 @@ function Orders() {
       const currentLocation = await Location.getCurrentPositionAsync({});
       return setLocation(currentLocation);
     };
-
-    const entityRef = firebase.firestore().collection('orders');
-    const userID = context.state.user.id;
-    entityRef
-      .where('authorID', '==', userID)
-      .orderBy('createdAt', 'desc')
-      .onSnapshot(
-        (querySnapshot) => {
+    getLocation();
+    navigation.addListener('focus', () => {
+      const entityRef = firebase.firestore().collection('orders');
+      const userID = context.state.user.id;
+      entityRef
+        .where('authorID', '==', userID)
+        .orderBy('createdAt', 'desc')
+        .get()
+        .then((querySnapshot) => {
           const newEntities = [];
           querySnapshot.forEach((doc) => {
             const entity = doc.data();
@@ -67,12 +70,11 @@ function Orders() {
             newEntities.push(entity);
           });
           setOrders(newEntities);
-          getLocation();
-        },
-        (error) => {
+        })
+        .catch((error) => {
           Toast.show(error.message);
-        },
-      );
+        });
+    });
   }, []);
 
   if (orders === null) {
@@ -114,5 +116,11 @@ function Orders() {
     </View>
   );
 }
+
+Orders.propTypes = {
+  navigation: PropTypes.shape({
+    addListener: PropTypes.func.isRequired,
+  }).isRequired,
+};
 
 export default Orders;
