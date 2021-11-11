@@ -18,9 +18,10 @@ const styles = StyleSheet.create({
     width: '75%',
     maxHeight: '40%',
     resizeMode: 'contain',
+    marginTop: 15,
   },
   buttonContainer: {
-    marginTop: 15,
+    marginVertical: 15,
     height: 45,
     flexDirection: 'row',
     justifyContent: 'center',
@@ -64,17 +65,23 @@ function New() {
   const [crust, setCrust] = React.useState('Normal');
   const [size, setSize] = React.useState('M');
   const [location, setLocation] = React.useState(null);
+  const mounted = React.useRef(false);
 
   React.useEffect(() => {
+    mounted.current = true;
     (async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
+        if (!mounted.current) return null;
         return setLocation(false);
       }
-
       const currentLocation = await Location.getCurrentPositionAsync({});
-      return setLocation(currentLocation);
+      if (mounted.current) return setLocation(currentLocation);
+      return null;
     })();
+    return () => {
+      mounted.current = false;
+    };
   }, []);
 
   const createOrder = () => {

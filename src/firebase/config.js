@@ -1,4 +1,4 @@
-import { initializeApp } from 'firebase';
+import firebase from 'firebase';
 import { Platform, InteractionManager } from 'react-native';
 
 const firebaseConfig = {
@@ -11,7 +11,7 @@ const firebaseConfig = {
   appId: '1:351099682322:android:ebd8777050a777237ce2cb',
 };
 
-const app = initializeApp(firebaseConfig);
+const app = !firebase.apps.length ? firebase.initializeApp(firebaseConfig) : firebase.app();
 
 // "Setting a timer for a long period of time" warning fix
 const newSetTimeout = global.setTimeout;

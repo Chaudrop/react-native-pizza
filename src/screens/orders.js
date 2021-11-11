@@ -43,16 +43,19 @@ function Orders(props) {
   const context = React.useContext(AuthContext);
   const [location, setLocation] = React.useState(null);
   const [orders, setOrders] = React.useState(null);
+  const mounted = React.useRef(false);
 
   React.useEffect(() => {
+    mounted.current = true;
     const getLocation = async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
+        if (!mounted.current) return null;
         return setLocation(false);
       }
-
       const currentLocation = await Location.getCurrentPositionAsync({});
-      return setLocation(currentLocation);
+      if (mounted.current) return setLocation(currentLocation);
+      return null;
     };
     getLocation();
     navigation.addListener('focus', () => {
@@ -69,12 +72,15 @@ function Orders(props) {
             entity.id = doc.id;
             newEntities.push(entity);
           });
-          setOrders(newEntities);
+          if (mounted.current) setOrders(newEntities);
         })
         .catch((error) => {
           Toast.show(error.message);
         });
     });
+    return () => {
+      mounted.current = false;
+    };
   }, []);
 
   if (orders === null) {

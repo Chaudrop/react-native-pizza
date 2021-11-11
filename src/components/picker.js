@@ -15,10 +15,9 @@ const styles = StyleSheet.create({
     width: '80%',
     marginBottom: 5,
   },
-
   pickerContainer: {
     borderWidth: 1,
-    borderRadius: 3,
+    borderRadius: 10,
     overflow: 'hidden',
     backgroundColor: '#FFF',
     borderColor: 'grey',
@@ -27,6 +26,9 @@ const styles = StyleSheet.create({
   picker: {
     padding: 5,
     width: '100%',
+  },
+  pickerItem: {
+    height: 50,
   },
 });
 
@@ -37,7 +39,12 @@ function Picker(props) {
     <View style={styles.container}>
       <Text style={styles.label}>{label}</Text>
       <View style={styles.pickerContainer}>
-        <ReactNativePicker selectedValue={value} onValueChange={onChange} style={styles.picker}>
+        <ReactNativePicker
+          selectedValue={value}
+          onValueChange={onChange}
+          style={styles.picker}
+          itemStyle={styles.pickerItem}
+        >
           {items.map((item) => (
             <ReactNativePicker.Item key={item} label={item} value={item} />
           ))}
