@@ -23,6 +23,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     position: 'absolute',
     marginTop: 130,
+    backgroundColor: 'lightgrey',
   },
   body: {
     marginTop: 40,
