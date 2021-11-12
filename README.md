@@ -3,6 +3,7 @@
 - [Launch in Development Mode](#launch-in-development-mode)
 - [Build the App](#build-the-app)
 - [Publishing to Expo's React Native Community](#publishing-to-expos-react-native-community)
+- [Run ESLint](#run-eslint)
 
 ## Launch in Development Mode
 
@@ -31,3 +32,7 @@ If you get errors (for example `Error: connect ECONNREFUSED 127.0.0.1:19001`), t
 After publishing the app, you can open the link in the console with the expo app on your phone.
 
 **Actual link to published app** : [https://exp.host/@chaudrop/react-native-pizza](https://exp.host/@chaudrop/react-native-pizza)
+
+## Run ESLint
+
+Use `npm run lint` to run ESLint verification.
