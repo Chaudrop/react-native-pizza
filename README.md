@@ -16,6 +16,8 @@ You can test it on an emulator or on your phone using the [Expo app](https://pla
 
 Use `expo build:android` to build for android and `expo build:ios` to build for IOS.
 
+**Actual APK build for android** : [https://expo.dev/artifacts/63ce1ba7-a9a2-4075-a81e-c219a8791bdf](https://expo.dev/artifacts/63ce1ba7-a9a2-4075-a81e-c219a8791bdf)
+
 ## Publishing to Expo's React Native Community
 
 To publish the app, you need to have an [Expo account](https://expo.dev/).
