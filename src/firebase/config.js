@@ -2,7 +2,7 @@ import firebase from 'firebase';
 import { Platform, InteractionManager } from 'react-native';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyBjQpezfR46Df_BBBOA77N56H-q26h0Q_k',
+  apiKey: '',
   authDomain: 'react-native-pizza.firebaseapp.com',
   databaseURL: 'https://react-native-pizza.firebaseio.com',
   projectId: 'react-native-pizza',
